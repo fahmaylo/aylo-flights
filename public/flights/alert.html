@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flight Alert — Aylo</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #ffffff;
+  --surface: #f8f9fa;
+  --border: #e0e0e0;
+  --text: #202124;
+  --muted: #70757a;
+  --muted2: #bdc1c6;
+  --accent: #1a73e8;
+  --accent-dim: #e8f0fe;
+  --green: #188038;
+  --green-dim: #e6f4ea;
+  --red: #d93025;
+  --radius: 24px;
+  --radius-sm: 12px;
+  --radius-xs: 8px;
+}
+body { background: var(--surface); color: var(--text); font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; -webkit-font-smoothing: antialiased; min-height: 100vh; }
+.wrap { max-width: 480px; margin: 0 auto; }
+
+.header { padding: 20px 20px 16px; background: var(--bg); border-bottom: 1px solid var(--border); }
+.logo-link { text-decoration: none; }
+.logo { font-size: 16px; font-weight: 600; color: var(--text); }
+.logo span { color: var(--accent); font-weight: 400; }
+.header-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+/* BEST FLIGHT */
+.section { padding: 20px 20px 0; background: var(--bg); }
+.section-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
+
+.flight-card { border: 1.5px solid var(--green); border-radius: var(--radius-sm); padding: 16px; margin-bottom: 16px; background: #f6fbf6; }
+.best-tag { display: inline-block; background: var(--green); color: #fff; font-size: 11px; font-weight: 600; border-radius: 20px; padding: 2px 10px; margin-bottom: 10px; letter-spacing: 0.04em; }
+.flight-airports { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.airport-code { font-size: 22px; font-weight: 600; letter-spacing: -0.2px; }
+.flight-arrow { color: var(--muted); font-size: 16px; }
+.flight-dates { font-size: 14px; color: var(--text); margin-bottom: 4px; }
+.flight-detail { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+.flight-bottom { display: flex; align-items: flex-end; justify-content: space-between; }
+.flight-airline { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text); }
+.airline-badge { width: 28px; height: 28px; border-radius: 6px; background: var(--accent-dim); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: var(--accent); }
+.flight-price-block { text-align: right; }
+.flight-price { font-size: 28px; font-weight: 600; color: var(--green); letter-spacing: -0.5px; line-height: 1; }
+.flight-nights { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+/* BOOK CTA */
+.cta-wrap { padding: 0 20px 20px; background: var(--bg); }
+.book-btn { display: block; width: 100%; background: var(--accent); color: #fff; border: none; border-radius: var(--radius); padding: 15px; font-size: 16px; font-weight: 500; cursor: pointer; text-align: center; text-decoration: none; }
+.book-btn:hover { background: #1765cc; }
+.book-note { font-size: 12px; color: var(--muted); text-align: center; margin-top: 8px; }
+
+/* DIVIDER */
+.divider { height: 8px; background: var(--surface); }
+
+/* OTHER OPTIONS */
+.other-section { padding: 20px; background: var(--bg); }
+.other-flight { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.other-flight:last-child { border-bottom: none; }
+.other-left { }
+.other-dates { font-size: 14px; color: var(--text); font-weight: 400; }
+.other-meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.other-price { font-size: 17px; font-weight: 500; color: var(--text); }
+
+/* DIVIDER */
+
+/* ALERT SUMMARY */
+.summary-section { padding: 20px; background: var(--bg); }
+.summary-row { display: flex; justify-content: space-between; align-items: baseline; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.summary-row:last-child { border-bottom: none; }
+.summary-key { font-size: 12px; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; }
+.summary-val { font-size: 14px; color: var(--text); text-align: right; }
+.summary-val.target { color: var(--accent); font-weight: 500; }
+
+/* CANCEL */
+.cancel-section { padding: 20px; background: var(--bg); text-align: center; border-top: 1px solid var(--border); }
+.cancel-note { font-size: 13px; color: var(--muted); margin-bottom: 14px; line-height: 1.5; }
+.cancel-btn { background: none; border: 1px solid var(--border); border-radius: var(--radius); padding: 11px 28px; font-size: 14px; color: var(--muted); cursor: pointer; font-family: inherit; transition: all 0.15s; }
+.cancel-btn:hover { border-color: var(--red); color: var(--red); }
+
+/* CONFIRM SHEET */
+.overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 100; align-items: flex-end; justify-content: center; }
+.overlay.show { display: flex; }
+.sheet { background: var(--bg); border-radius: 20px 20px 0 0; padding: 24px 20px 40px; width: 100%; max-width: 480px; animation: slideUp 0.25s ease; }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.sheet-title { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
+.sheet-sub { font-size: 14px; color: var(--muted); line-height: 1.5; margin-bottom: 22px; }
+.sheet-del { width: 100%; padding: 14px; background: var(--red); border: none; border-radius: var(--radius); color: #fff; font-size: 15px; font-weight: 500; cursor: pointer; font-family: inherit; margin-bottom: 10px; }
+.sheet-cancel { width: 100%; padding: 14px; background: none; border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-size: 15px; cursor: pointer; font-family: inherit; }
+
+/* DELETED STATE */
+.deleted { display: none; text-align: center; padding: 64px 24px; background: var(--bg); min-height: 100vh; }
+.deleted.show { display: block; }
+.deleted-icon { font-size: 48px; margin-bottom: 20px; }
+.deleted-title { font-size: 22px; font-weight: 500; margin-bottom: 8px; letter-spacing: -0.3px; }
+.deleted-sub { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 28px; }
+.new-alert-btn { display: inline-block; background: var(--accent); color: #fff; text-decoration: none; padding: 13px 28px; border-radius: var(--radius); font-size: 15px; font-weight: 500; }
+
+.footer { padding: 20px; text-align: center; font-size: 12px; color: var(--muted2); }
+</style>
+</head>
+<body>
+
+<div id="mainContent">
+<div class="wrap">
+
+  <div class="header">
+    <a href="https://ayloai.com/flights" class="logo-link">
+      <div class="logo">Aylo <span>Flight Alert</span></div>
+    </a>
+    <div class="header-sub" data-aylo="last-polled">SFO → Paris · found Mar 12, 2026 at 9:41 AM</div>
+  </div>
+
+  <!-- BEST FLIGHT -->
+  <div class="section">
+    <div class="section-label" style="padding-top:20px">Best option</div>
+    <div class="flight-card">
+      <div class="best-tag">Cheapest</div>
+      <div class="flight-airports">
+        <div class="airport-code">SFO</div>
+        <div class="flight-arrow">→</div>
+        <div class="airport-code">CDG</div>
+      </div>
+      <div class="flight-dates" data-aylo="last-best-dates">Sun Sep 14 — Sun Sep 21</div>
+      <div class="flight-detail" data-aylo="last-best-nights">7 nights · Nonstop</div>
+      <div class="flight-bottom">
+        <div class="flight-airline">
+          <div class="airline-badge">AF</div>
+          Air France
+        </div>
+        <div class="flight-price-block">
+          <div class="flight-price" data-aylo="last-best-price">$687</div>
+          <div class="flight-nights">per person</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-wrap">
+    <a href="https://google.com/flights" class="book-btn">Search on Google Flights →</a>
+    <div class="book-note">We don't charge a fee.</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- OTHER OPTIONS -->
+  <div class="other-section">
+    <div class="section-label">Other qualifying dates</div>
+    <div class="other-flight">
+      <div class="other-left">
+        <div class="other-dates">Sun Sep 21 — Sun Sep 28</div>
+        <div class="other-meta">7 nights · Nonstop · Air France</div>
+      </div>
+      <div class="other-price">$694</div>
+    </div>
+    <div class="other-flight">
+      <div class="other-left">
+        <div class="other-dates">Sun Sep 14 — Fri Sep 19</div>
+        <div class="other-meta">5 nights · Nonstop · Air France</div>
+      </div>
+      <div class="other-price">$698</div>
+    </div>
+    <div class="other-flight">
+      <div class="other-left">
+        <div class="other-dates">Sun Oct 5 — Sun Oct 12</div>
+        <div class="other-meta">7 nights · Nonstop · Air France</div>
+      </div>
+      <div class="other-price">$699</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ALERT SUMMARY -->
+  <div class="summary-section">
+    <div class="section-label">Your alert</div>
+    <div class="summary-row">
+      <div class="summary-key">Route</div>
+      <div class="summary-val" data-aylo="route">San Francisco → Paris</div>
+    </div>
+    <div class="summary-row">
+      <div class="summary-key">Target</div>
+      <div class="summary-val target" data-aylo="target">$700</div>
+    </div>
+    <div class="summary-row">
+      <div class="summary-key">Stops</div>
+      <div class="summary-val">Nonstop only</div>
+    </div>
+    <div class="summary-row">
+      <div class="summary-key">Trip length</div>
+      <div class="summary-val" data-aylo="trip-length">5–7 nights</div>
+    </div>
+    <div class="summary-row">
+      <div class="summary-key">Window</div>
+      <div class="summary-val" data-aylo="window">Next 3 months</div>
+    </div>
+    <div class="summary-row">
+      <div class="summary-key">Expires</div>
+      <div class="summary-val" data-aylo="expires">Nov 18, 2026</div>
+    </div>
+  </div>
+
+  <!-- CANCEL -->
+  <div class="cancel-section">
+    <div class="cancel-note">Found your flight? Cancel this alert so we stop sending notifications.</div>
+    <button class="cancel-btn" onclick="askCancel()">Cancel this alert</button>
+  </div>
+
+  <div class="footer">Aylo · hi@ayloai.com/flights</div>
+
+</div>
+</div>
+
+<!-- CONFIRM SHEET -->
+<div class="overlay" id="overlay">
+  <div class="sheet">
+    <div class="sheet-title">Cancel this alert?</div>
+    <div class="sheet-sub">We'll stop watching <span data-aylo="route">SFO → Paris</span> for you and won't send any more notifications.</div>
+    <button class="sheet-del" onclick="doCancel()">Yes, cancel it</button>
+    <button class="sheet-cancel" onclick="closeSheet()">Keep watching</button>
+  </div>
+</div>
+
+<!-- DELETED STATE -->
+<div class="deleted" id="deletedState">
+  <div class="deleted-icon">✓</div>
+  <div class="deleted-title">Alert cancelled</div>
+  <div class="deleted-sub">We've stopped watching <span data-aylo="route">SFO → Paris</span>. No more notifications will be sent.</div>
+  <a href="https://ayloai.com/flights" class="new-alert-btn">Set a new alert</a>
+</div>
+
+<script>
+// ─── CONFIG ─────────────────────────────────────────────────────
+const API_URL = '/api';
+
+// Parse alert ID from path /flights/alert/{id} OR ?id={id}
+function getAlertId() {
+  const m = window.location.pathname.match(/\/alert\/([^/?]+)/);
+  if (m) return m[1];
+  return new URLSearchParams(window.location.search).get('id');
+}
+
+// ─── FORMATTERS ─────────────────────────────────────────────────
+function fmtDate(s) {
+  if (!s) return '';
+  return new Date(s + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+}
+function fmtTimestamp(iso) {
+  if (!iso) return 'never';
+  return new Date(iso).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+}
+function fmtWindow(w) {
+  return w === '3mo' ? 'Next 3 months' : w === '6mo' ? 'Next 6 months' : 'Next 12 months';
+}
+function nights(dep, ret) {
+  return Math.round((new Date(ret) - new Date(dep)) / 86400000);
+}
+
+// ─── LOAD ───────────────────────────────────────────────────────
+const alertId = getAlertId();
+let currentAlert = null;
+
+async function loadAlert() {
+  if (!alertId) {
+    document.body.innerHTML = '<div style="padding:60px 20px;text-align:center;font-family:sans-serif;"><h1>Alert not found</h1><p>This link is invalid. <a href="/flights">Set a new alert</a>.</p></div>';
+    return;
+  }
+  try {
+    const res = await fetch(`${API_URL}/alerts/${alertId}`);
+    if (res.status === 404) {
+      document.body.innerHTML = '<div style="padding:60px 20px;text-align:center;font-family:sans-serif;"><h1>Alert not found</h1><p>This alert may have been cancelled or expired. <a href="/flights">Set a new alert</a>.</p></div>';
+      return;
+    }
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    currentAlert = await res.json();
+    populate(currentAlert);
+  } catch (err) {
+    console.error('Failed to load alert:', err);
+    alert('Could not load this alert. Try again later.');
+  }
+}
+
+function populate(a) {
+  // Populate all the elements with real data.
+  // Selectors are best-effort; missing elements are silently skipped.
+  const route = `${a.origin_city || a.origin} → ${a.destination_city || a.destination}`;
+
+  const set = (sel, val) => {
+    document.querySelectorAll(sel).forEach(el => { if (val != null) el.textContent = val; });
+  };
+
+  // Find common elements and update them
+  set('[data-aylo="route"]', route);
+  set('[data-aylo="target"]', `$${a.target_price}`);
+  set('[data-aylo="trip-length"]', `${a.min_nights}–${a.max_nights} nights`);
+  set('[data-aylo="window"]', fmtWindow(a.travel_window));
+  set('[data-aylo="expires"]', new Date(a.expires_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }));
+  set('[data-aylo="last-best-price"]', a.last_best_price ? `$${a.last_best_price}` : 'no flights tracked yet');
+  set('[data-aylo="last-best-dates"]', a.last_best_departure ? `${fmtDate(a.last_best_departure)} — ${fmtDate(a.last_best_return)}` : '');
+  set('[data-aylo="last-best-nights"]', a.last_best_departure ? `${nights(a.last_best_departure, a.last_best_return)} nights · Nonstop` : '');
+  set('[data-aylo="last-polled"]', `Last checked ${fmtTimestamp(a.last_polled_at)}`);
+}
+
+// ─── ACTIONS ────────────────────────────────────────────────────
+function askCancel(){
+  document.getElementById('overlay').classList.add('show');
+}
+function closeSheet(){
+  document.getElementById('overlay').classList.remove('show');
+}
+async function doCancel(){
+  if (!alertId) return;
+  try {
+    const res = await fetch(`${API_URL}/alerts/${alertId}`, { method: 'DELETE' });
+    if (!res.ok && res.status !== 404) throw new Error(`HTTP ${res.status}`);
+    document.getElementById('overlay').classList.remove('show');
+    document.getElementById('mainContent').style.display='none';
+    document.getElementById('deletedState').classList.add('show');
+    window.scrollTo({top:0,behavior:'smooth'});
+  } catch (err) {
+    alert('Could not cancel this alert. Try again later.');
+  }
+}
+
+loadAlert();
+</script>
+</body>
+</html>

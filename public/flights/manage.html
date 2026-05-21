@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Alert — Aylo</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #ffffff;
+  --surface: #f8f9fa;
+  --border: #e0e0e0;
+  --text: #202124;
+  --muted: #70757a;
+  --muted2: #bdc1c6;
+  --accent: #1a73e8;
+  --accent-dim: #e8f0fe;
+  --green: #188038;
+  --red: #d93025;
+  --radius: 24px;
+  --radius-sm: 12px;
+  --radius-xs: 8px;
+}
+body { background: var(--bg); color: var(--text); font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 560px; margin: 0 auto; padding: 0 20px 80px; }
+
+/* HEADER */
+header { padding: 36px 0 28px; border-bottom: 1px solid var(--border); margin-bottom: 32px; display: flex; align-items: center; justify-content: space-between; }
+.logo { font-size: 18px; font-weight: 600; color: var(--text); }
+.logo span { color: var(--accent); font-weight: 400; }
+.alert-eyebrow { font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+.alert-route { font-size: 22px; font-weight: 500; letter-spacing: -0.3px; margin-bottom: 4px; }
+.alert-meta { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+.price-display { display: flex; align-items: baseline; gap: 6px; margin: 20px 0 4px; }
+.price-label { font-size: 12px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.price-val { font-size: 36px; font-weight: 500; color: var(--accent); letter-spacing: -0.5px; }
+.price-context { font-size: 13px; color: var(--muted); padding: 10px 14px; background: var(--accent-dim); border-radius: var(--radius-xs); margin-top: 10px; line-height: 1.5; }
+
+/* DETAILS */
+.detail-list { margin-top: 20px; border-top: 1px solid var(--border); }
+.detail-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.detail-row:last-child { border-bottom: none; }
+.detail-key { font-size: 12px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.detail-val { font-size: 14px; color: var(--text); }
+
+/* EXPIRY */
+.expiry-card { background: #fef7e0; border-radius: var(--radius-sm); padding: 14px 18px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
+.expiry-icon { font-size: 20px; flex-shrink: 0; }
+.expiry-text { font-size: 13px; color: #b06000; line-height: 1.5; }
+
+/* ACTIONS */
+.actions { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+.btn-delete { width: 100%; padding: 14px; background: none; border: 1.5px solid var(--red); border-radius: var(--radius); color: var(--red); font-family: inherit; font-size: 15px; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+.btn-delete:hover { background: var(--red); color: #fff; }
+
+/* CONFIRM STATE */
+.confirm-card { display: none; background: #fff0ef; border: 1.5px solid var(--red); border-radius: var(--radius-sm); padding: 24px; margin-bottom: 16px; animation: fadeUp 0.25s ease; }
+.confirm-card.show { display: block; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+.confirm-title { font-size: 17px; font-weight: 500; color: var(--red); margin-bottom: 8px; }
+.confirm-sub { font-size: 14px; color: var(--text); line-height: 1.6; margin-bottom: 20px; }
+.confirm-btns { display: flex; flex-direction: column; gap: 10px; }
+.btn-confirm-delete { width: 100%; padding: 13px; background: var(--red); border: none; border-radius: var(--radius); color: #fff; font-family: inherit; font-size: 15px; font-weight: 500; cursor: pointer; }
+.btn-confirm-cancel { width: 100%; padding: 13px; background: none; border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); font-family: inherit; font-size: 15px; cursor: pointer; }
+
+/* DELETED STATE */
+.deleted-card { display: none; text-align: center; padding: 48px 24px; }
+.deleted-card.show { display: block; animation: fadeUp 0.3s ease; }
+.deleted-icon { font-size: 40px; margin-bottom: 16px; }
+.deleted-title { font-size: 20px; font-weight: 500; margin-bottom: 8px; }
+.deleted-sub { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 24px; }
+.btn-new { display: inline-block; background: var(--accent); color: #fff; text-decoration: none; padding: 12px 28px; border-radius: var(--radius); font-size: 14px; font-weight: 500; }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <a href="https://ayloai.com/flights" style="text-decoration:none">
+      <div class="logo">Aylo <span>Flight Alert</span></div>
+    </a>
+  </header>
+
+  <!-- ALERT DETAILS -->
+  <div id="alertView">
+
+    <div class="alert-card">
+      <div class="alert-eyebrow">Your alert</div>
+      <div class="alert-route" data-aylo="route">JFK → CDG</div>
+      <div class="alert-meta">New York (all airports) → Paris, Charles de Gaulle</div>
+
+      <div style="margin-top:20px">
+        <div class="price-label">Alert price</div>
+        <div class="price-display">
+          <div class="price-val" data-aylo="target">$680</div>
+        </div>
+      </div>
+
+      <div class="detail-list">
+        <div class="detail-row">
+          <div class="detail-key">Stops</div>
+          <div class="detail-val">Nonstop only</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-key">Travel window</div>
+          <div class="detail-val" data-aylo="window">Next 6 months</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-key">Trip length</div>
+          <div class="detail-val" data-aylo="trip-length">5–7 nights</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-key">Notify</div>
+          <div class="detail-val" data-aylo="email">you@example.com</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-key">Set on</div>
+          <div class="detail-val" data-aylo="created">May 18, 2026</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-key">Expires</div>
+          <div class="detail-val" data-aylo="expires">Nov 18, 2026</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="expiry-card">
+      <div class="expiry-icon">⏳</div>
+      <div class="expiry-text">This alert expires automatically on <strong>November 18, 2026</strong>. We'll email you a reminder 2 weeks before if you want to renew it.</div>
+    </div>
+
+    <!-- CONFIRM CARD (hidden until delete tapped) -->
+    <div class="confirm-card" id="confirmCard">
+      <div class="confirm-title">Remove this alert?</div>
+      <div class="confirm-sub">We'll stop watching <span data-aylo="route">JFK → CDG</span> for you and won't send any further notifications. This can't be undone.</div>
+      <div class="confirm-btns">
+        <button class="btn-confirm-delete" onclick="deleteAlert()">Yes, remove it</button>
+        <button class="btn-confirm-cancel" onclick="cancelDelete()">Keep watching</button>
+      </div>
+    </div>
+
+    <div class="actions" id="actionBtns">
+      <button class="btn-delete" onclick="askDelete()">Cancel this alert</button>
+    </div>
+
+  </div><!-- /alertView -->
+
+  <!-- DELETED STATE -->
+  <div class="deleted-card" id="deletedCard">
+    <div class="deleted-icon">✓</div>
+    <div class="deleted-title">Alert removed</div>
+    <div class="deleted-sub">We've stopped watching <span data-aylo="route">JFK → CDG</span> for you. No further emails will be sent.</div>
+    <a href="https://ayloai.com/flights" class="btn-new">Set a new alert</a>
+  </div>
+
+  </div>
+
+</div>
+
+<script>
+const API_URL = '/api';
+
+function getAlertId() {
+  const m = window.location.pathname.match(/\/manage\/([^/?]+)/);
+  if (m) return m[1];
+  return new URLSearchParams(window.location.search).get('id');
+}
+
+const alertId = getAlertId();
+
+async function loadAlert() {
+  if (!alertId) {
+    document.body.innerHTML = '<div style="padding:60px 20px;text-align:center;font-family:sans-serif;"><h1>Alert not found</h1><p>This link is invalid. <a href="/flights">Set a new alert</a>.</p></div>';
+    return;
+  }
+  try {
+    const res = await fetch(`${API_URL}/alerts/${alertId}`);
+    if (res.status === 404) {
+      document.body.innerHTML = '<div style="padding:60px 20px;text-align:center;font-family:sans-serif;"><h1>Alert not found</h1><p>This alert may have been cancelled or expired. <a href="/flights">Set a new alert</a>.</p></div>';
+      return;
+    }
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const a = await res.json();
+    const fmtWindow = w => w === '3mo' ? 'Next 3 months' : w === '6mo' ? 'Next 6 months' : 'Next 12 months';
+    const set = (sel, val) => {
+      document.querySelectorAll(sel).forEach(el => { if (val != null) el.textContent = val; });
+    };
+    set('[data-aylo="route"]', `${a.origin_city || a.origin} → ${a.destination_city || a.destination}`);
+    set('[data-aylo="target"]', `$${a.target_price}`);
+    set('[data-aylo="trip-length"]', `${a.min_nights}–${a.max_nights} nights`);
+    set('[data-aylo="window"]', fmtWindow(a.travel_window));
+    set('[data-aylo="email"]', a.email);
+    set('[data-aylo="created"]', new Date(a.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }));
+    set('[data-aylo="expires"]', new Date(a.expires_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }));
+  } catch (err) {
+    console.error(err);
+    alert('Could not load this alert.');
+  }
+}
+
+function askDelete(){
+  document.getElementById('confirmCard').classList.add('show');
+  document.getElementById('actionBtns').style.display='none';
+  document.getElementById('confirmCard').scrollIntoView({behavior:'smooth', block:'center'});
+}
+function cancelDelete(){
+  document.getElementById('confirmCard').classList.remove('show');
+  document.getElementById('actionBtns').style.display='flex';
+}
+async function deleteAlert(){
+  if (!alertId) return;
+  try {
+    const res = await fetch(`${API_URL}/alerts/${alertId}`, { method: 'DELETE' });
+    if (!res.ok && res.status !== 404) throw new Error(`HTTP ${res.status}`);
+    document.getElementById('alertView').style.display='none';
+    document.getElementById('deletedCard').classList.add('show');
+    window.scrollTo({top:0, behavior:'smooth'});
+  } catch (err) {
+    alert('Could not cancel this alert. Try again later.');
+  }
+}
+
+loadAlert();
+</script>
+</body>
+</html>

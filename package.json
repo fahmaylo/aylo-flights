@@ -1,0 +1,12 @@
+{
+  "name": "aylo-flights",
+  "version": "1.0.0",
+  "description": "Aylo Flight Alert — nonstop flight price alerts",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@sendgrid/mail": "^8.1.6",
+    "pg": "^8.21.0"
+  }
+}

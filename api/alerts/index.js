@@ -54,9 +54,11 @@ module.exports = async (req, res) => {
     );
     const alert = rows[0];
 
-    sendConfirmation(alert).catch(err =>
-      console.error(`Confirmation email failed for ${alert.id}:`, err.message)
-    );
+    try {
+      await sendConfirmation(alert);
+    } catch (emailErr) {
+      console.error(`Confirmation email failed for ${alert.id}:`, emailErr.message);
+    }
 
     res.status(201).json({ id: alert.id });
   } catch (err) {

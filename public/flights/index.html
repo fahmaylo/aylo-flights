@@ -84,6 +84,27 @@ header { margin-bottom: 24px; padding: 0 4px; }
 .done-sub strong { color: var(--text); }
 .done-btn { display: inline-block; background: var(--accent); color: #ffffff; text-decoration: none; padding: 12px 28px; border-radius: var(--radius); font-size: 14px; font-weight: 500; }
 
+/* PRICE PREVIEW */
+.preview-section { display: none; }
+.preview-section.show { display: block; }
+.preview-btn { display: block; width: 100%; background: var(--bg); border: 1.5px solid var(--accent); border-radius: var(--radius); padding: 12px; font-size: 14px; font-weight: 500; color: var(--accent); font-family: inherit; cursor: pointer; transition: all 0.15s; }
+.preview-btn:hover { background: var(--accent-dim); }
+.preview-btn:disabled { border-color: var(--muted2); color: var(--muted2); cursor: not-allowed; }
+.preview-loading { text-align: center; padding: 20px; font-size: 13px; color: var(--muted); }
+.preview-error { font-size: 13px; color: var(--red); text-align: center; padding: 12px; }
+.chart-wrap { margin-top: 16px; }
+.chart-bars { display: flex; align-items: flex-end; gap: 3px; height: 160px; padding: 0 2px; }
+.chart-bar { flex: 1; min-width: 0; border-radius: 4px 4px 0 0; background: var(--accent-dim); position: relative; cursor: default; transition: background 0.15s; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding-top: 4px; }
+.chart-bar:hover { background: #d2e3fc; }
+.chart-bar.below { background: var(--green-dim); }
+.chart-bar.below:hover { background: #c8e6c9; }
+.chart-bar.cheapest { background: var(--green-dim); border: 1.5px solid var(--green); }
+.chart-price { font-size: 9px; font-weight: 600; color: var(--text); white-space: nowrap; }
+.chart-labels { display: flex; gap: 3px; padding: 4px 2px 0; }
+.chart-label { flex: 1; min-width: 0; text-align: center; font-size: 9px; color: var(--muted); overflow: hidden; }
+.chart-summary { margin-top: 14px; padding: 10px 14px; background: var(--green-dim); border-radius: var(--radius-xs); font-size: 13px; color: var(--green); line-height: 1.5; }
+.chart-note { font-size: 11px; color: var(--muted); margin-top: 8px; text-align: center; }
+
 /* FOOTER */
 .footer { font-size: 12px; color: var(--muted); text-align: center; margin-top: 24px; line-height: 1.6; padding: 0 16px; }
 </style>
@@ -123,6 +144,15 @@ header { margin-bottom: 24px; padding: 0 4px; }
       <div style="font-size:11px; color: var(--muted); margin-top:8px; line-height:1.5;">
         Use 3-letter airport codes. For multiple airports separate with commas (e.g. <span style="color: var(--accent);">JFK,LGA,EWR</span> for all NYC airports, or <span style="color: var(--accent);">CDG,ORY</span> for Paris).
       </div>
+    </div>
+
+    <!-- PRICE PREVIEW -->
+    <div class="section preview-section" id="previewSection">
+      <div class="section-label">Current prices</div>
+      <button class="preview-btn" id="previewBtn" type="button" onclick="loadPreview()">Check current prices</button>
+      <div class="preview-loading" id="previewLoading" style="display:none">Checking prices...</div>
+      <div class="preview-error" id="previewError" style="display:none"></div>
+      <div class="chart-wrap" id="previewChart" style="display:none"></div>
     </div>
 
     <!-- TRIP LENGTH -->
@@ -416,8 +446,125 @@ function resetForm() {
   document.getElementById('email').value = '';
   document.getElementById('submitBtn').textContent = 'Set alert';
   document.getElementById('submitBtn').disabled = true;
+  document.getElementById('previewSection').classList.remove('show');
+  document.getElementById('previewChart').style.display = 'none';
+  lastPreviewKey = '';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+// ─── PRICE PREVIEW ──────────────────────────────────────────────
+let lastPreviewKey = '';
+
+function updatePreviewVisibility() {
+  const origin = document.getElementById('origin').value.trim().toUpperCase();
+  const dest = document.getElementById('destination').value.trim().toUpperCase();
+  const section = document.getElementById('previewSection');
+  if (airportsValid(origin) && airportsValid(dest) && origin !== dest) {
+    section.classList.add('show');
+    // Reset if route changed
+    const key = `${origin}-${dest}`;
+    if (key !== lastPreviewKey) {
+      document.getElementById('previewChart').style.display = 'none';
+      document.getElementById('previewError').style.display = 'none';
+      document.getElementById('previewBtn').style.display = 'block';
+    }
+  } else {
+    section.classList.remove('show');
+  }
+}
+
+async function loadPreview() {
+  const origin = normalizeAirports(document.getElementById('origin').value);
+  const dest = normalizeAirports(document.getElementById('destination').value);
+  const btn = document.getElementById('previewBtn');
+  const loading = document.getElementById('previewLoading');
+  const chart = document.getElementById('previewChart');
+  const error = document.getElementById('previewError');
+
+  lastPreviewKey = `${origin}-${dest}`;
+  btn.style.display = 'none';
+  error.style.display = 'none';
+  chart.style.display = 'none';
+  loading.style.display = 'block';
+
+  try {
+    const params = new URLSearchParams({
+      origin, destination: dest,
+      min_nights: state.minNights || 5,
+      max_nights: state.maxNights || 7
+    });
+    const res = await fetch(`${API_URL}/preview?${params}`);
+    if (!res.ok) throw new Error('Failed to fetch');
+    const data = await res.json();
+
+    if (!data.prices || !data.prices.length) {
+      error.textContent = 'No nonstop flights found for this route and trip length.';
+      error.style.display = 'block';
+      loading.style.display = 'none';
+      btn.style.display = 'block';
+      return;
+    }
+
+    renderChart(data.prices);
+    loading.style.display = 'none';
+  } catch (err) {
+    error.textContent = 'Could not load prices. Try again later.';
+    error.style.display = 'block';
+    loading.style.display = 'none';
+    btn.style.display = 'block';
+  }
+}
+
+function renderChart(prices) {
+  const chart = document.getElementById('previewChart');
+  const targetPrice = parseInt(document.getElementById('targetPrice').value) || null;
+  const maxPrice = Math.max(...prices.map(p => p.price));
+  const minPrice = Math.min(...prices.map(p => p.price));
+  const cheapestDate = prices.reduce((a, b) => a.price < b.price ? a : b).date;
+
+  let barsHtml = '';
+  let labelsHtml = '';
+  for (const p of prices) {
+    const pct = Math.max((p.price / maxPrice) * 100, 12);
+    const isCheapest = p.date === cheapestDate;
+    const isBelow = targetPrice && p.price <= targetPrice;
+    const cls = isCheapest ? 'chart-bar cheapest' : isBelow ? 'chart-bar below' : 'chart-bar';
+    const d = new Date(p.date + 'T00:00:00');
+    const label = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const weekday = d.toLocaleDateString('en-US', { weekday: 'short' });
+
+    barsHtml += `<div class="${cls}" style="height:${pct}%" title="${weekday} ${label} — $${p.price}">
+      <div class="chart-price">$${p.price}</div>
+    </div>`;
+    labelsHtml += `<div class="chart-label">${label}</div>`;
+  }
+
+  const cheapDate = new Date(cheapestDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+  let summaryHtml = `Cheapest: <strong>$${minPrice}</strong> departing ${cheapDate}`;
+  if (targetPrice) {
+    const belowCount = prices.filter(p => p.price <= targetPrice).length;
+    if (belowCount > 0) {
+      summaryHtml += ` — ${belowCount} date${belowCount > 1 ? 's' : ''} under your $${targetPrice} target`;
+    } else {
+      summaryHtml = `Cheapest is <strong>$${minPrice}</strong> on ${cheapDate}. No dates under your $${targetPrice} target yet.`;
+    }
+  }
+
+  chart.innerHTML = `
+    <div class="chart-bars">${barsHtml}</div>
+    <div class="chart-labels">${labelsHtml}</div>
+    <div class="chart-summary">${summaryHtml}</div>
+    <div class="chart-note">Showing nonstop round-trip prices for the next 2 weeks. Uses 1 API credit.</div>
+  `;
+  chart.style.display = 'block';
+}
+
+// Hook into input changes to show/hide preview
+const _origOnInputChange = onInputChange;
+onInputChange = function() {
+  _origOnInputChange();
+  updatePreviewVisibility();
+};
 
 // Initial validation pass
 onInputChange();

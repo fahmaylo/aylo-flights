@@ -52,7 +52,7 @@ header { margin-bottom: 24px; padding: 0 4px; }
 .pill:hover { border-color: var(--accent); color: var(--accent); }
 .pill.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); font-weight: 500; }
 
-/* STOPS DISPLAY (locked) */
+/* STOPS DISPLAY */
 .stops-display { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .stops-display-pill { background: var(--accent-dim); border: 1.5px solid var(--accent); border-radius: 20px; padding: 9px 18px; color: var(--accent); font-size: 13px; font-weight: 500; }
 .stops-display-note { font-size: 12px; color: var(--muted); }
@@ -64,18 +64,17 @@ header { margin-bottom: 24px; padding: 0 4px; }
 .price-in { flex: 1; background: none; border: none; outline: none; padding: 10px 0; font-size: 22px; font-family: inherit; color: var(--text); }
 .price-in::placeholder { color: var(--muted2); }
 
-/* SUBMIT */
+/* BUTTONS */
 .submit-btn { display: block; width: 100%; background: var(--accent); color: #ffffff; border: none; border-radius: var(--radius); padding: 16px; font-size: 16px; font-weight: 500; font-family: inherit; cursor: pointer; transition: background 0.15s; margin-top: 4px; }
 .submit-btn:hover:not(:disabled) { background: #1765cc; }
 .submit-btn:disabled { background: var(--muted2); cursor: not-allowed; }
 
-/* SUCCESS / ERROR STATES */
+/* BANNERS */
 .banner { display: none; padding: 14px 18px; border-radius: var(--radius-sm); margin-bottom: 16px; font-size: 14px; line-height: 1.5; }
 .banner.show { display: block; }
-.banner.success { background: var(--green-dim); color: var(--green); border: 1px solid #c8e6c9; }
 .banner.error { background: #fef0f0; color: var(--red); border: 1px solid #f5c2c0; }
 
-/* SUCCESS PAGE */
+/* DONE STATE */
 .done-state { display: none; text-align: center; padding: 48px 24px; }
 .done-state.show { display: block; }
 .done-icon { font-size: 56px; margin-bottom: 20px; }
@@ -84,26 +83,29 @@ header { margin-bottom: 24px; padding: 0 4px; }
 .done-sub strong { color: var(--text); }
 .done-btn { display: inline-block; background: var(--accent); color: #ffffff; text-decoration: none; padding: 12px 28px; border-radius: var(--radius); font-size: 14px; font-weight: 500; }
 
-/* PRICE PREVIEW */
-.preview-section { display: none; }
-.preview-section.show { display: block; }
-.preview-btn { display: block; width: 100%; background: var(--bg); border: 1.5px solid var(--accent); border-radius: var(--radius); padding: 12px; font-size: 14px; font-weight: 500; color: var(--accent); font-family: inherit; cursor: pointer; transition: all 0.15s; }
-.preview-btn:hover { background: var(--accent-dim); }
-.preview-btn:disabled { border-color: var(--muted2); color: var(--muted2); cursor: not-allowed; }
-.preview-loading { text-align: center; padding: 20px; font-size: 13px; color: var(--muted); }
-.preview-error { font-size: 13px; color: var(--red); text-align: center; padding: 12px; }
-.chart-wrap { margin-top: 16px; }
-.chart-bars { display: flex; align-items: flex-end; gap: 3px; height: 160px; padding: 0 2px; }
-.chart-bar { flex: 1; min-width: 0; border-radius: 4px 4px 0 0; background: var(--accent-dim); position: relative; cursor: default; transition: background 0.15s; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; padding-top: 4px; }
-.chart-bar:hover { background: #d2e3fc; }
-.chart-bar.below { background: var(--green-dim); }
-.chart-bar.below:hover { background: #c8e6c9; }
-.chart-bar.cheapest { background: var(--green-dim); border: 1.5px solid var(--green); }
-.chart-price { font-size: 9px; font-weight: 600; color: var(--text); white-space: nowrap; }
-.chart-labels { display: flex; gap: 3px; padding: 4px 2px 0; }
-.chart-label { flex: 1; min-width: 0; text-align: center; font-size: 9px; color: var(--muted); overflow: hidden; }
-.chart-summary { margin-top: 14px; padding: 10px 14px; background: var(--green-dim); border-radius: var(--radius-xs); font-size: 13px; color: var(--green); line-height: 1.5; }
-.chart-note { font-size: 11px; color: var(--muted); margin-top: 8px; text-align: center; }
+/* STEP 2 — RESULTS */
+.step2-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; }
+.back-btn { background: none; border: none; font-size: 22px; color: var(--muted); cursor: pointer; padding: 4px 0; line-height: 1; flex-shrink: 0; }
+.back-btn:hover { color: var(--text); }
+.step2-route { font-size: 20px; font-weight: 500; letter-spacing: -0.3px; }
+.step2-meta { font-size: 13px; color: var(--muted); margin-top: 3px; }
+
+/* CHART */
+.chart-section { background: var(--bg); border-radius: var(--radius-sm); padding: 20px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+.chart-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; }
+.chart-title { font-size: 15px; font-weight: 500; }
+.chart-period { font-size: 12px; color: var(--muted); }
+.chart-svg { width: 100%; height: auto; display: block; }
+.chart-loading { text-align: center; padding: 60px 20px; font-size: 14px; color: var(--muted); line-height: 1.8; }
+.chart-error { text-align: center; padding: 40px 20px; font-size: 14px; color: var(--red); }
+
+/* ALERT SECTION */
+.alert-section-title { font-size: 11px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
+.alert-question { font-size: 20px; font-weight: 500; letter-spacing: -0.3px; margin-bottom: 6px; }
+.alert-desc { font-size: 14px; color: var(--muted); line-height: 1.5; margin-bottom: 18px; }
+.suggested { font-size: 12px; color: var(--muted); margin-top: 8px; }
+.suggested strong { color: var(--accent); }
+.divider { height: 1px; background: var(--border); margin: 20px 0; }
 
 /* FOOTER */
 .footer { font-size: 12px; color: var(--muted); text-align: center; margin-top: 24px; line-height: 1.6; padding: 0 16px; }
@@ -119,11 +121,12 @@ header { margin-bottom: 24px; padding: 0 4px; }
   </header>
 
   <!-- BANNERS -->
-  <div class="banner success" id="successBanner"></div>
   <div class="banner error" id="errorBanner"></div>
 
-  <!-- FORM -->
-  <div id="formContent">
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- STEP 1: SEARCH FORM                                        -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div id="step1">
 
     <!-- ROUTE -->
     <div class="section">
@@ -132,12 +135,12 @@ header { margin-bottom: 24px; padding: 0 4px; }
         <div>
           <div class="field-lbl">From</div>
           <input class="field" id="origin" type="text" placeholder="SFO" maxlength="20"
-            oninput="onInputChange()" onblur="this.value = normalizeAirports(this.value)" />
+            oninput="onStep1Change()" onblur="this.value = normalizeAirports(this.value)" />
         </div>
         <div>
           <div class="field-lbl">To</div>
           <input class="field" id="destination" type="text" placeholder="CDG,ORY" maxlength="40"
-            oninput="onInputChange()" onblur="this.value = normalizeAirports(this.value)" />
+            oninput="onStep1Change()" onblur="this.value = normalizeAirports(this.value)" />
         </div>
       </div>
       <div class="field-error" id="routeError"></div>
@@ -146,28 +149,19 @@ header { margin-bottom: 24px; padding: 0 4px; }
       </div>
     </div>
 
-    <!-- PRICE PREVIEW -->
-    <div class="section preview-section" id="previewSection">
-      <div class="section-label">Current prices</div>
-      <button class="preview-btn" id="previewBtn" type="button" onclick="loadPreview()">Check current prices</button>
-      <div class="preview-loading" id="previewLoading" style="display:none">Checking prices...</div>
-      <div class="preview-error" id="previewError" style="display:none"></div>
-      <div class="chart-wrap" id="previewChart" style="display:none"></div>
-    </div>
-
     <!-- TRIP LENGTH -->
     <div class="section">
       <div class="section-label">Trip length</div>
       <div class="pill-row">
-        <button class="pill" type="button" data-min="2" data-max="3">Fri–Sun</button>
-        <button class="pill active" type="button" data-min="5" data-max="7">5–7 nights</button>
-        <button class="pill" type="button" data-min="12" data-max="14">12–14 nights</button>
-        <button class="pill" type="button" data-min="custom" data-max="custom">Custom…</button>
+        <button class="pill" type="button" data-min="2" data-max="3">Fri-Sun</button>
+        <button class="pill active" type="button" data-min="5" data-max="7">5-7 nights</button>
+        <button class="pill" type="button" data-min="12" data-max="14">12-14 nights</button>
+        <button class="pill" type="button" data-min="custom" data-max="custom">Custom...</button>
       </div>
-      <div id="customNightsRow" style="display:none; margin-top:12px; display:none; gap:8px; align-items:center;">
-        <input class="field" id="minNights" type="number" placeholder="Min" min="1" max="30" style="flex:1;" oninput="onInputChange()" />
+      <div id="customNightsRow" style="display:none; margin-top:12px; gap:8px; align-items:center;">
+        <input class="field" id="minNights" type="number" placeholder="Min" min="1" max="30" style="flex:1;" oninput="onStep1Change()" />
         <span style="color: var(--muted);">to</span>
-        <input class="field" id="maxNights" type="number" placeholder="Max" min="1" max="30" style="flex:1;" oninput="onInputChange()" />
+        <input class="field" id="maxNights" type="number" placeholder="Max" min="1" max="30" style="flex:1;" oninput="onStep1Change()" />
         <span style="color: var(--muted); font-size: 13px;">nights</span>
       </div>
     </div>
@@ -182,7 +176,7 @@ header { margin-bottom: 24px; padding: 0 4px; }
       </div>
     </div>
 
-    <!-- STOPS (display only) -->
+    <!-- STOPS -->
     <div class="section">
       <div class="section-label">Stops</div>
       <div class="stops-display">
@@ -191,34 +185,65 @@ header { margin-bottom: 24px; padding: 0 4px; }
       </div>
     </div>
 
-    <!-- TARGET PRICE -->
-    <div class="section">
-      <div class="section-label">Target price</div>
-      <div class="price-row">
-        <div class="price-sym">$</div>
-        <input class="price-in" id="targetPrice" type="number" placeholder="e.g. 700" min="1" oninput="onInputChange()" />
-      </div>
-      <div style="font-size:12px; color: var(--muted); margin-top:8px;">
-        We'll email you when a nonstop flight on this route drops to this price or below.
-      </div>
-    </div>
-
-    <!-- EMAIL -->
-    <div class="section">
-      <div class="section-label">Email</div>
-      <input class="field" id="email" type="email" placeholder="you@example.com"
-        oninput="onInputChange()" onblur="validateEmail()" />
-      <div class="field-error" id="emailError"></div>
-    </div>
-
-    <!-- SUBMIT -->
-    <button class="submit-btn" id="submitBtn" type="button" onclick="submitAlert()" disabled>Set alert</button>
+    <!-- FIND PRICES -->
+    <button class="submit-btn" id="findBtn" type="button" onclick="findAlertPrice()" disabled>Find alert price</button>
 
   </div>
 
-  <!-- DONE STATE -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- STEP 2: RESULTS + SET ALERT                                -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <div id="step2" style="display:none">
+
+    <!-- HEADER WITH BACK -->
+    <div class="step2-header">
+      <button class="back-btn" onclick="goBack()">&larr;</button>
+      <div>
+        <div class="step2-route" id="step2Route">San Francisco &rarr; Paris</div>
+        <div class="step2-meta" id="step2Meta">Nonstop &middot; 5-7 nights &middot; next 6 months</div>
+      </div>
+    </div>
+
+    <!-- CHART -->
+    <div class="chart-section">
+      <div class="chart-header">
+        <div class="chart-title">Price overview</div>
+        <div class="chart-period">Next 13 months</div>
+      </div>
+      <div id="chartArea">
+        <div class="chart-loading" id="chartLoading">Checking 13 months of prices...<br>This takes about 15 seconds.</div>
+        <div class="chart-error" id="chartError" style="display:none"></div>
+        <div id="chartSvg" style="display:none"></div>
+      </div>
+    </div>
+
+    <!-- SET ALERT -->
+    <div class="section">
+      <div class="alert-section-title">Set your alert</div>
+      <div class="alert-question">What's your target price?</div>
+      <div class="alert-desc">We'll email you the moment this route drops to your number — with the exact dates and airline.</div>
+      <div class="price-row">
+        <div class="price-sym">$</div>
+        <input class="price-in" id="targetPrice" type="number" placeholder="e.g. 750" min="1" oninput="onStep2Change()" />
+      </div>
+      <div class="suggested" id="suggestedPrice" style="display:none"></div>
+
+      <div class="divider"></div>
+
+      <div class="field-lbl">Your email</div>
+      <input class="field" id="email" type="email" placeholder="you@example.com"
+        oninput="onStep2Change()" onblur="validateEmail()" />
+      <div class="field-error" id="emailError"></div>
+    </div>
+
+    <button class="submit-btn" id="submitBtn" type="button" onclick="submitAlert()" disabled>Set alert</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════ -->
+  <!-- DONE STATE                                                  -->
+  <!-- ═══════════════════════════════════════════════════════════ -->
   <div class="done-state" id="doneState">
-    <div class="done-icon">✓</div>
+    <div class="done-icon">&#10003;</div>
     <div class="done-title">Alert set</div>
     <div class="done-sub">
       We're watching <strong id="doneRoute"></strong> for nonstop flights under <strong id="doneTarget"></strong>.<br>
@@ -229,17 +254,13 @@ header { margin-bottom: 24px; padding: 0 4px; }
 
   <!-- FOOTER -->
   <div class="footer">
-    Aylo Flight Alert · We never charge a fee.<br>
+    Aylo Flight Alert &middot; We never charge a fee.<br>
     Email-only notifications, sent once daily when a price matches.
   </div>
 
 </div>
 
 <script>
-// ─── CONFIG ─────────────────────────────────────────────────────
-// CHANGE THIS to your deployed backend URL.
-// For local dev:   http://localhost:3000
-// For production:  https://api.ayloai.com (or your Railway URL)
 const API_URL = '/api';
 
 // ─── STATE ──────────────────────────────────────────────────────
@@ -247,7 +268,8 @@ const state = {
   minNights: 5,
   maxNights: 7,
   travelWindow: '6mo',
-  customNights: false
+  customNights: false,
+  previewData: null
 };
 
 // ─── HELPERS ────────────────────────────────────────────────────
@@ -261,93 +283,10 @@ function airportsValid(s) {
   if (!s) return false;
   return s.split(',').every(p => /^[A-Z]{3}$/.test(p.trim().toUpperCase()));
 }
-
-// ─── PILL HANDLERS ──────────────────────────────────────────────
-document.querySelectorAll('.pill[data-min]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.pill[data-min]').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const min = btn.dataset.min;
-    const max = btn.dataset.max;
-    if (min === 'custom') {
-      state.customNights = true;
-      document.getElementById('customNightsRow').style.display = 'flex';
-    } else {
-      state.customNights = false;
-      state.minNights = parseInt(min);
-      state.maxNights = parseInt(max);
-      document.getElementById('customNightsRow').style.display = 'none';
-    }
-    onInputChange();
-  });
-});
-
-document.querySelectorAll('.pill[data-win]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.pill[data-win]').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    state.travelWindow = btn.dataset.win;
-    onInputChange();
-  });
-});
-
-// ─── VALIDATION + ENABLE SUBMIT ─────────────────────────────────
-function onInputChange() {
-  const origin = document.getElementById('origin').value.trim().toUpperCase();
-  const dest = document.getElementById('destination').value.trim().toUpperCase();
-  const targetPrice = document.getElementById('targetPrice').value;
-  const email = document.getElementById('email').value.trim();
-
-  // Route validation
-  const routeError = document.getElementById('routeError');
-  routeError.textContent = '';
-  if (origin && dest) {
-    if (origin === dest) {
-      routeError.textContent = 'Origin and destination cannot be the same.';
-    } else {
-      const originAirports = origin.split(',').map(s => s.trim());
-      const destAirports = dest.split(',').map(s => s.trim());
-      const overlap = originAirports.some(a => destAirports.includes(a));
-      if (overlap) routeError.textContent = 'Origin and destination cannot share airports.';
-    }
-  }
-
-  // Compute custom nights
-  if (state.customNights) {
-    const mn = parseInt(document.getElementById('minNights').value);
-    const mx = parseInt(document.getElementById('maxNights').value);
-    if (mn && mx && mn <= mx) {
-      state.minNights = mn;
-      state.maxNights = mx;
-    } else {
-      state.minNights = state.maxNights = null;
-    }
-  }
-
-  // Enable submit only if everything's valid
-  const ready =
-    airportsValid(origin) &&
-    airportsValid(dest) &&
-    origin !== dest &&
-    !routeError.textContent &&
-    state.minNights && state.maxNights &&
-    targetPrice && parseInt(targetPrice) > 0 &&
-    isValidEmail(email);
-
-  document.getElementById('submitBtn').disabled = !ready;
+function fmtWindow(w) {
+  return w === '3mo' ? 'next 3 months' : w === '6mo' ? 'next 6 months' : 'next 12 months';
 }
 
-function validateEmail() {
-  const email = document.getElementById('email').value.trim();
-  const err = document.getElementById('emailError');
-  if (email && !isValidEmail(email)) {
-    err.textContent = 'Please enter a valid email address.';
-  } else {
-    err.textContent = '';
-  }
-}
-
-// ─── CITY NAMES ─────────────────────────────────────────────────
 const CITIES = {
   SFO:'San Francisco',OAK:'Oakland',SJC:'San Jose',
   JFK:'New York',LGA:'New York',EWR:'Newark',
@@ -381,13 +320,235 @@ function resolveCity(codes) {
   return cities.length === 1 ? cities[0] : cities.length > 1 ? cities.join(', ') : null;
 }
 
-// ─── SUBMIT ─────────────────────────────────────────────────────
+// ─── PILL HANDLERS ──────────────────────────────────────────────
+document.querySelectorAll('.pill[data-min]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.pill[data-min]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    if (btn.dataset.min === 'custom') {
+      state.customNights = true;
+      document.getElementById('customNightsRow').style.display = 'flex';
+    } else {
+      state.customNights = false;
+      state.minNights = parseInt(btn.dataset.min);
+      state.maxNights = parseInt(btn.dataset.max);
+      document.getElementById('customNightsRow').style.display = 'none';
+    }
+    onStep1Change();
+  });
+});
+
+document.querySelectorAll('.pill[data-win]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.pill[data-win]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.travelWindow = btn.dataset.win;
+    onStep1Change();
+  });
+});
+
+// ─── STEP 1 VALIDATION ─────────────────────────────────────────
+function onStep1Change() {
+  const origin = document.getElementById('origin').value.trim().toUpperCase();
+  const dest = document.getElementById('destination').value.trim().toUpperCase();
+
+  const routeError = document.getElementById('routeError');
+  routeError.textContent = '';
+  if (origin && dest) {
+    if (origin === dest) {
+      routeError.textContent = 'Origin and destination cannot be the same.';
+    } else {
+      const oa = origin.split(',').map(s => s.trim());
+      const da = dest.split(',').map(s => s.trim());
+      if (oa.some(a => da.includes(a))) routeError.textContent = 'Origin and destination cannot share airports.';
+    }
+  }
+
+  if (state.customNights) {
+    const mn = parseInt(document.getElementById('minNights').value);
+    const mx = parseInt(document.getElementById('maxNights').value);
+    if (mn && mx && mn <= mx) { state.minNights = mn; state.maxNights = mx; }
+    else { state.minNights = state.maxNights = null; }
+  }
+
+  const ready = airportsValid(origin) && airportsValid(dest) && origin !== dest
+    && !routeError.textContent && state.minNights && state.maxNights;
+
+  document.getElementById('findBtn').disabled = !ready;
+}
+
+// ─── STEP 2 VALIDATION ─────────────────────────────────────────
+function onStep2Change() {
+  const targetPrice = document.getElementById('targetPrice').value;
+  const email = document.getElementById('email').value.trim();
+  const ready = targetPrice && parseInt(targetPrice) > 0 && isValidEmail(email);
+  document.getElementById('submitBtn').disabled = !ready;
+}
+
+function validateEmail() {
+  const email = document.getElementById('email').value.trim();
+  const err = document.getElementById('emailError');
+  if (email && !isValidEmail(email)) err.textContent = 'Please enter a valid email address.';
+  else err.textContent = '';
+}
+
+// ─── FIND ALERT PRICE (Step 1 → Step 2) ─────────────────────────
+async function findAlertPrice() {
+  const origin = normalizeAirports(document.getElementById('origin').value);
+  const dest = normalizeAirports(document.getElementById('destination').value);
+
+  const originCity = resolveCity(origin) || origin;
+  const destCity = resolveCity(dest) || dest;
+
+  // Switch to step 2
+  document.getElementById('step1').style.display = 'none';
+  document.getElementById('step2').style.display = 'block';
+  document.getElementById('step2Route').textContent = `${originCity} \u2192 ${destCity}`;
+  document.getElementById('step2Meta').textContent = `Nonstop \u00b7 ${state.minNights}\u2013${state.maxNights} nights \u00b7 ${fmtWindow(state.travelWindow)}`;
+
+  // Reset chart
+  document.getElementById('chartLoading').style.display = 'block';
+  document.getElementById('chartError').style.display = 'none';
+  document.getElementById('chartSvg').style.display = 'none';
+  document.getElementById('suggestedPrice').style.display = 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Fetch data
+  try {
+    const params = new URLSearchParams({
+      origin, destination: dest,
+      min_nights: state.minNights,
+      max_nights: state.maxNights
+    });
+    const res = await fetch(`${API_URL}/preview?${params}`);
+    if (!res.ok) throw new Error('Failed to fetch');
+    const data = await res.json();
+
+    state.previewData = data;
+
+    const valid = data.months.filter(m => m.low !== null);
+    if (!valid.length) {
+      document.getElementById('chartLoading').style.display = 'none';
+      document.getElementById('chartError').textContent = 'No nonstop flights found for this route and trip length.';
+      document.getElementById('chartError').style.display = 'block';
+      return;
+    }
+
+    renderAreaChart(data);
+
+    if (data.suggested_target) {
+      document.getElementById('targetPrice').placeholder = `e.g. ${data.suggested_target}`;
+      const el = document.getElementById('suggestedPrice');
+      el.innerHTML = `Suggested: <strong>$${data.suggested_target}</strong> (25th percentile of monthly lows)`;
+      el.style.display = 'block';
+    }
+
+    document.getElementById('chartLoading').style.display = 'none';
+    document.getElementById('chartSvg').style.display = 'block';
+  } catch (err) {
+    document.getElementById('chartLoading').style.display = 'none';
+    document.getElementById('chartError').textContent = 'Could not load prices. Try again later.';
+    document.getElementById('chartError').style.display = 'block';
+  }
+}
+
+// ─── SVG AREA CHART ─────────────────────────────────────────────
+function renderAreaChart(data) {
+  const months = data.months;
+  const valid = months.filter(m => m.low !== null);
+  if (!valid.length) return;
+
+  const W = 520, H = 260;
+  const pad = { top: 30, right: 20, bottom: 40, left: 55 };
+  const cw = W - pad.left - pad.right;
+  const ch = H - pad.top - pad.bottom;
+
+  const allPrices = valid.flatMap(m => [m.low, m.high]);
+  const minP = Math.min(...allPrices);
+  const maxP = Math.max(...allPrices);
+  const range = maxP - minP || 100;
+  const yMin = Math.floor((minP - range * 0.1) / 50) * 50;
+  const yMax = Math.ceil((maxP + range * 0.1) / 50) * 50;
+
+  const x = (i) => pad.left + (i / (months.length - 1)) * cw;
+  const y = (p) => pad.top + (1 - (p - yMin) / (yMax - yMin)) * ch;
+
+  // Build low line path
+  let lowPoints = [];
+  let validIdx = 0;
+  for (let i = 0; i < months.length; i++) {
+    if (months[i].low !== null) {
+      lowPoints.push({ x: x(i), y: y(months[i].low), month: months[i] });
+    }
+  }
+
+  const linePath = lowPoints.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+  const areaPath = linePath + ` L${lowPoints[lowPoints.length-1].x.toFixed(1)},${(pad.top + ch).toFixed(1)} L${lowPoints[0].x.toFixed(1)},${(pad.top + ch).toFixed(1)} Z`;
+
+  // Find high and low months
+  const lowMonth = valid.reduce((a, b) => a.low < b.low ? a : b);
+  const highMonth = valid.reduce((a, b) => a.high > b.high ? a : b);
+  const lowIdx = months.indexOf(lowMonth);
+  const highIdx = months.indexOf(highMonth);
+
+  // Y-axis ticks
+  const yTicks = [];
+  const tickStep = Math.ceil((yMax - yMin) / 5 / 50) * 50;
+  for (let t = yMin; t <= yMax; t += tickStep) yTicks.push(t);
+
+  // Build SVG
+  let svg = `<svg class="chart-svg" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+
+  // Grid lines + Y labels
+  for (const t of yTicks) {
+    const ty = y(t);
+    svg += `<line x1="${pad.left}" y1="${ty}" x2="${W - pad.right}" y2="${ty}" stroke="#f0f0f0" stroke-width="1"/>`;
+    svg += `<text x="${pad.left - 8}" y="${ty + 4}" text-anchor="end" fill="#70757a" font-size="11" font-family="sans-serif">$${t}</text>`;
+  }
+
+  // Area fill
+  svg += `<path d="${areaPath}" fill="#e8f0fe" opacity="0.6"/>`;
+
+  // Line
+  svg += `<path d="${linePath}" fill="none" stroke="#1a73e8" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+
+  // Data points
+  for (const p of lowPoints) {
+    svg += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3" fill="#1a73e8"/>`;
+  }
+
+  // Low marker
+  svg += `<circle cx="${x(lowIdx).toFixed(1)}" cy="${y(lowMonth.low).toFixed(1)}" r="5" fill="#188038"/>`;
+  svg += `<text x="${x(lowIdx).toFixed(1)}" y="${y(lowMonth.low) + 18}" text-anchor="middle" fill="#188038" font-size="11" font-weight="600" font-family="sans-serif">Low $${lowMonth.low}</text>`;
+
+  // High marker
+  svg += `<circle cx="${x(highIdx).toFixed(1)}" cy="${y(highMonth.high).toFixed(1)}" r="5" fill="#d93025"/>`;
+  svg += `<text x="${x(highIdx).toFixed(1)}" y="${y(highMonth.high) - 10}" text-anchor="middle" fill="#d93025" font-size="11" font-weight="600" font-family="sans-serif">High $${highMonth.high}</text>`;
+
+  // X-axis labels
+  for (let i = 0; i < months.length; i++) {
+    const lbl = months[i].label;
+    svg += `<text x="${x(i).toFixed(1)}" y="${H - 8}" text-anchor="middle" fill="#70757a" font-size="10" font-family="sans-serif">${lbl}</text>`;
+  }
+
+  svg += '</svg>';
+  document.getElementById('chartSvg').innerHTML = svg;
+}
+
+// ─── BACK BUTTON ────────────────────────────────────────────────
+function goBack() {
+  document.getElementById('step2').style.display = 'none';
+  document.getElementById('step1').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─── SUBMIT ALERT ───────────────────────────────────────────────
 async function submitAlert() {
   const submitBtn = document.getElementById('submitBtn');
   const errorBanner = document.getElementById('errorBanner');
 
   submitBtn.disabled = true;
-  submitBtn.textContent = 'Setting alert…';
+  submitBtn.textContent = 'Setting alert\u2026';
   errorBanner.classList.remove('show');
 
   const origin = normalizeAirports(document.getElementById('origin').value);
@@ -396,9 +557,7 @@ async function submitAlert() {
   const targetPrice = parseInt(document.getElementById('targetPrice').value);
 
   const body = {
-    email,
-    origin,
-    destination,
+    email, origin, destination,
     origin_city: resolveCity(origin),
     destination_city: resolveCity(destination),
     min_nights: state.minNights,
@@ -413,21 +572,15 @@ async function submitAlert() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     });
-
     const data = await res.json();
+    if (!res.ok) throw new Error(data.error || `Request failed (${res.status})`);
 
-    if (!res.ok) {
-      throw new Error(data.error || `Request failed (${res.status})`);
-    }
-
-    // Show success state
-    document.getElementById('formContent').style.display = 'none';
-    document.getElementById('doneRoute').textContent = `${origin} → ${destination}`;
+    document.getElementById('step2').style.display = 'none';
+    document.getElementById('doneRoute').textContent = `${resolveCity(origin) || origin} \u2192 ${resolveCity(destination) || destination}`;
     document.getElementById('doneTarget').textContent = `$${targetPrice}`;
     document.getElementById('doneEmail').textContent = email;
     document.getElementById('doneState').classList.add('show');
     window.scrollTo({ top: 0, behavior: 'smooth' });
-
   } catch (err) {
     errorBanner.textContent = `Couldn't set alert: ${err.message}`;
     errorBanner.classList.add('show');
@@ -437,137 +590,24 @@ async function submitAlert() {
   }
 }
 
+// ─── RESET ──────────────────────────────────────────────────────
 function resetForm() {
-  document.getElementById('formContent').style.display = 'block';
+  document.getElementById('step1').style.display = 'block';
+  document.getElementById('step2').style.display = 'none';
   document.getElementById('doneState').classList.remove('show');
   document.getElementById('origin').value = '';
   document.getElementById('destination').value = '';
   document.getElementById('targetPrice').value = '';
   document.getElementById('email').value = '';
-  document.getElementById('submitBtn').textContent = 'Set alert';
+  document.getElementById('findBtn').disabled = true;
   document.getElementById('submitBtn').disabled = true;
-  document.getElementById('previewSection').classList.remove('show');
-  document.getElementById('previewChart').style.display = 'none';
-  lastPreviewKey = '';
+  document.getElementById('submitBtn').textContent = 'Set alert';
+  state.previewData = null;
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ─── PRICE PREVIEW ──────────────────────────────────────────────
-let lastPreviewKey = '';
-
-function updatePreviewVisibility() {
-  const origin = document.getElementById('origin').value.trim().toUpperCase();
-  const dest = document.getElementById('destination').value.trim().toUpperCase();
-  const section = document.getElementById('previewSection');
-  if (airportsValid(origin) && airportsValid(dest) && origin !== dest) {
-    section.classList.add('show');
-    // Reset if route changed
-    const key = `${origin}-${dest}`;
-    if (key !== lastPreviewKey) {
-      document.getElementById('previewChart').style.display = 'none';
-      document.getElementById('previewError').style.display = 'none';
-      document.getElementById('previewBtn').style.display = 'block';
-    }
-  } else {
-    section.classList.remove('show');
-  }
-}
-
-async function loadPreview() {
-  const origin = normalizeAirports(document.getElementById('origin').value);
-  const dest = normalizeAirports(document.getElementById('destination').value);
-  const btn = document.getElementById('previewBtn');
-  const loading = document.getElementById('previewLoading');
-  const chart = document.getElementById('previewChart');
-  const error = document.getElementById('previewError');
-
-  lastPreviewKey = `${origin}-${dest}`;
-  btn.style.display = 'none';
-  error.style.display = 'none';
-  chart.style.display = 'none';
-  loading.style.display = 'block';
-
-  try {
-    const params = new URLSearchParams({
-      origin, destination: dest,
-      min_nights: state.minNights || 5,
-      max_nights: state.maxNights || 7
-    });
-    const res = await fetch(`${API_URL}/preview?${params}`);
-    if (!res.ok) throw new Error('Failed to fetch');
-    const data = await res.json();
-
-    if (!data.prices || !data.prices.length) {
-      error.textContent = 'No nonstop flights found for this route and trip length.';
-      error.style.display = 'block';
-      loading.style.display = 'none';
-      btn.style.display = 'block';
-      return;
-    }
-
-    renderChart(data.prices);
-    loading.style.display = 'none';
-  } catch (err) {
-    error.textContent = 'Could not load prices. Try again later.';
-    error.style.display = 'block';
-    loading.style.display = 'none';
-    btn.style.display = 'block';
-  }
-}
-
-function renderChart(prices) {
-  const chart = document.getElementById('previewChart');
-  const targetPrice = parseInt(document.getElementById('targetPrice').value) || null;
-  const maxPrice = Math.max(...prices.map(p => p.price));
-  const minPrice = Math.min(...prices.map(p => p.price));
-  const cheapestDate = prices.reduce((a, b) => a.price < b.price ? a : b).date;
-
-  let barsHtml = '';
-  let labelsHtml = '';
-  for (const p of prices) {
-    const pct = Math.max((p.price / maxPrice) * 100, 12);
-    const isCheapest = p.date === cheapestDate;
-    const isBelow = targetPrice && p.price <= targetPrice;
-    const cls = isCheapest ? 'chart-bar cheapest' : isBelow ? 'chart-bar below' : 'chart-bar';
-    const d = new Date(p.date + 'T00:00:00');
-    const label = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    const weekday = d.toLocaleDateString('en-US', { weekday: 'short' });
-
-    barsHtml += `<div class="${cls}" style="height:${pct}%" title="${weekday} ${label} — $${p.price}">
-      <div class="chart-price">$${p.price}</div>
-    </div>`;
-    labelsHtml += `<div class="chart-label">${label}</div>`;
-  }
-
-  const cheapDate = new Date(cheapestDate + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-  let summaryHtml = `Cheapest: <strong>$${minPrice}</strong> departing ${cheapDate}`;
-  if (targetPrice) {
-    const belowCount = prices.filter(p => p.price <= targetPrice).length;
-    if (belowCount > 0) {
-      summaryHtml += ` — ${belowCount} date${belowCount > 1 ? 's' : ''} under your $${targetPrice} target`;
-    } else {
-      summaryHtml = `Cheapest is <strong>$${minPrice}</strong> on ${cheapDate}. No dates under your $${targetPrice} target yet.`;
-    }
-  }
-
-  chart.innerHTML = `
-    <div class="chart-bars">${barsHtml}</div>
-    <div class="chart-labels">${labelsHtml}</div>
-    <div class="chart-summary">${summaryHtml}</div>
-    <div class="chart-note">Showing nonstop round-trip prices for the next 2 weeks. Uses 1 API credit.</div>
-  `;
-  chart.style.display = 'block';
-}
-
-// Hook into input changes to show/hide preview
-const _origOnInputChange = onInputChange;
-onInputChange = function() {
-  _origOnInputChange();
-  updatePreviewVisibility();
-};
-
-// Initial validation pass
-onInputChange();
+// Initial state
+onStep1Change();
 </script>
 
 </body>

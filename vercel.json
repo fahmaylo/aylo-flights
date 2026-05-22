@@ -23,6 +23,9 @@
   "functions": {
     "api/poll.js": {
       "maxDuration": 60
+    },
+    "api/preview.js": {
+      "maxDuration": 60
     }
   }
 }

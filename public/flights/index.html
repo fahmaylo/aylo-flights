@@ -377,27 +377,33 @@ function onStep1Change() {
 }
 
 // ─── STEP 2 VALIDATION ─────────────────────────────────────────
+let priceWarningTimer = null;
+
 function onStep2Change() {
   const targetPrice = document.getElementById('targetPrice').value;
   const email = document.getElementById('email').value.trim();
   const price = parseInt(targetPrice);
   const warning = document.getElementById('priceWarning');
 
-  // Check if target is within a realistic range
+  // Clear warning immediately when typing (feels responsive)
+  if (priceWarningTimer) clearTimeout(priceWarningTimer);
+  warning.textContent = '';
+
+  // Check if target is within a realistic range (debounced)
   const lowestFound = state.previewData && state.previewData.overall_low;
   let priceOk = true;
   if (price && lowestFound) {
     if (price < lowestFound * 0.7) {
-      warning.textContent = `Please choose a higher price, given the lowest price is currently $${lowestFound.toLocaleString()}.`;
       priceOk = false;
+      priceWarningTimer = setTimeout(() => {
+        warning.textContent = `Please choose a higher price, given the lowest price is currently $${lowestFound.toLocaleString()}.`;
+      }, 600);
     } else if (price > lowestFound * 1.2) {
-      warning.textContent = `Please choose a lower price, given the lowest price is currently $${lowestFound.toLocaleString()}.`;
       priceOk = false;
-    } else {
-      warning.textContent = '';
+      priceWarningTimer = setTimeout(() => {
+        warning.textContent = `Please choose a lower price, given the lowest price is currently $${lowestFound.toLocaleString()}.`;
+      }, 600);
     }
-  } else {
-    warning.textContent = '';
   }
 
   const ready = price > 0 && isValidEmail(email) && priceOk;

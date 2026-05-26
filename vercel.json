@@ -1,12 +1,12 @@
 {
   "cleanUrls": true,
-  "redirects": [
-    { "source": "/flights/:path*", "destination": "/:path*", "permanent": true }
-  ],
   "rewrites": [
     { "source": "/", "destination": "/flights/index.html" },
     { "source": "/alert/:id", "destination": "/flights/alert.html" },
-    { "source": "/manage/:id", "destination": "/flights/manage.html" }
+    { "source": "/manage/:id", "destination": "/flights/manage.html" },
+    { "source": "/flights", "destination": "/flights/index.html" },
+    { "source": "/flights/alert/:id", "destination": "/flights/alert.html" },
+    { "source": "/flights/manage/:id", "destination": "/flights/manage.html" }
   ],
   "headers": [
     {

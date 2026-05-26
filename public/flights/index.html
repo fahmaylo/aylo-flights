@@ -388,10 +388,10 @@ function onStep2Change() {
   let priceOk = true;
   if (price && lowestFound) {
     if (price < lowestFound * 0.7) {
-      warning.textContent = `The lowest nonstop price we found is $${lowestFound}. A target of $${price} is unlikely to be reached.`;
+      warning.textContent = `Please choose a higher price, given the lowest price is currently $${lowestFound.toLocaleString()}.`;
       priceOk = false;
     } else if (price > lowestFound * 1.2) {
-      warning.textContent = `The lowest price is already $${lowestFound}. You'll likely be notified right away at $${price}.`;
+      warning.textContent = `Please choose a lower price, given the lowest price is currently $${lowestFound.toLocaleString()}.`;
       priceOk = false;
     } else {
       warning.textContent = '';

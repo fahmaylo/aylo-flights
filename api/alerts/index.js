@@ -40,7 +40,7 @@ module.exports = async (req, res) => {
     return res.status(400).json({ error: 'Origin and destination overlap' });
 
   const expiresAt = new Date();
-  expiresAt.setMonth(expiresAt.getMonth() + 3);
+  expiresAt.setDate(expiresAt.getDate() + 30);
 
   try {
     const { rows } = await db.query(

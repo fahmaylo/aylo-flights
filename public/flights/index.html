@@ -208,10 +208,10 @@ header { margin-bottom: 24px; padding: 0 4px; }
     <div class="chart-section">
       <div class="chart-header">
         <div class="chart-title">Price overview</div>
-        <div class="chart-period">Next 13 months</div>
+        <div class="chart-period">Next 12 months</div>
       </div>
       <div id="chartArea">
-        <div class="chart-loading" id="chartLoading">Checking 13 months of prices...<br>This takes about 15 seconds.</div>
+        <div class="chart-loading" id="chartLoading">Checking 12 months of prices...</div>
         <div class="chart-error" id="chartError" style="display:none"></div>
         <div id="chartSvg" style="display:none"></div>
       </div>
@@ -224,10 +224,8 @@ header { margin-bottom: 24px; padding: 0 4px; }
       <div class="alert-desc">We'll email you the moment this route drops to your number — with the exact dates and airline.</div>
       <div class="price-row">
         <div class="price-sym">$</div>
-        <input class="price-in" id="targetPrice" type="number" placeholder="e.g. 750" min="1" oninput="onStep2Change()" />
+        <input class="price-in" id="targetPrice" type="number" placeholder="750" min="1" oninput="onStep2Change()" />
       </div>
-      <div class="suggested" id="suggestedPrice" style="display:none"></div>
-
       <div class="divider"></div>
 
       <div class="field-lbl">Your email</div>
@@ -436,11 +434,8 @@ async function findAlertPrice() {
 
     renderAreaChart(data);
 
-    if (data.suggested_target) {
-      document.getElementById('targetPrice').placeholder = `e.g. ${data.suggested_target}`;
-      const el = document.getElementById('suggestedPrice');
-      el.innerHTML = `Suggested: <strong>$${data.suggested_target}</strong> (25th percentile of monthly lows)`;
-      el.style.display = 'block';
+    if (data.overall_low) {
+      document.getElementById('targetPrice').placeholder = data.overall_low;
     }
 
     document.getElementById('chartLoading').style.display = 'none';

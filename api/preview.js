@@ -1,7 +1,9 @@
 const cors = require('../lib/cors');
+const db = require('../lib/db');
 const { fetchCalendarWindow, addDays, nightsBetween, fmt } = require('../lib/search');
 
-function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+const CACHE_TTL_HOURS = 12;
+const CONCURRENCY = 4;
 
 module.exports = async (req, res) => {
   if (cors(req, res)) return;
@@ -14,67 +16,84 @@ module.exports = async (req, res) => {
 
   const minN = parseInt(min_nights) || 5;
   const maxN = parseInt(max_nights) || 7;
+  const cacheKey = `${origin}|${destination}|${minN}|${maxN}`;
+
+  // Check cache
+  try {
+    const cached = await db.query(
+      `SELECT data FROM preview_cache
+       WHERE cache_key = $1 AND created_at > NOW() - INTERVAL '${CACHE_TTL_HOURS} hours'`,
+      [cacheKey]
+    );
+    if (cached.rows.length) {
+      return res.json(cached.rows[0].data);
+    }
+  } catch (err) {
+    // Cache miss or DB unavailable — continue to fetch fresh data
+    console.error('Cache read error:', err.message);
+  }
 
   try {
     const now = new Date();
-    const months = [];
 
-    // Make 13 calls, one per month, sampling 9 departure days mid-month
+    // Build all 13 month tasks
+    const tasks = [];
     for (let m = 0; m < 13; m++) {
       const monthStart = new Date(now.getFullYear(), now.getMonth() + m, 1);
-      // Sample mid-month: start on the 11th (or tomorrow if this month)
       let outboundStart;
       if (m === 0) {
-        // This month: start tomorrow
         outboundStart = addDays(now, 1);
       } else {
         outboundStart = new Date(monthStart.getFullYear(), monthStart.getMonth(), 11);
       }
-
-      const outboundEnd = addDays(outboundStart, 8); // 9 departure days (0-8)
       const returnStart = addDays(outboundStart, minN);
-
-      const results = await fetchCalendarWindow(origin, destination, outboundStart, returnStart);
-
-      // Filter to valid trip lengths and collect prices
-      let low = null;
-      let high = null;
-      let cheapestDep = null;
-      let cheapestRet = null;
-
-      for (const r of results) {
-        if (!r.price || r.has_no_flights) continue;
-        const n = nightsBetween(r.departure, r.return);
-        if (n < minN || n > maxN) continue;
-
-        if (low === null || r.price < low) {
-          low = r.price;
-          cheapestDep = r.departure;
-          cheapestRet = r.return;
-        }
-        if (high === null || r.price > high) {
-          high = r.price;
-        }
-      }
-
       const label = monthStart.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
 
-      months.push({
-        month: fmt(monthStart).slice(0, 7),
-        label,
-        low,
-        high,
-        cheapest_departure: cheapestDep,
-        cheapest_return: cheapestRet
-      });
-
-      if (m < 12) await sleep(300);
+      tasks.push({ m, monthStart, outboundStart, returnStart, label });
     }
 
-    // Filter out months with no data
+    // Run in parallel batches
+    const months = new Array(13);
+    for (let i = 0; i < tasks.length; i += CONCURRENCY) {
+      const batch = tasks.slice(i, i + CONCURRENCY);
+      const results = await Promise.all(
+        batch.map(t => fetchCalendarWindow(origin, destination, t.outboundStart, t.returnStart))
+      );
+
+      for (let j = 0; j < batch.length; j++) {
+        const t = batch[j];
+        const calResults = results[j];
+
+        let low = null, high = null, cheapestDep = null, cheapestRet = null;
+
+        for (const r of calResults) {
+          if (!r.price || r.has_no_flights) continue;
+          const n = nightsBetween(r.departure, r.return);
+          if (n < minN || n > maxN) continue;
+
+          if (low === null || r.price < low) {
+            low = r.price;
+            cheapestDep = r.departure;
+            cheapestRet = r.return;
+          }
+          if (high === null || r.price > high) {
+            high = r.price;
+          }
+        }
+
+        months[t.m] = {
+          month: fmt(t.monthStart).slice(0, 7),
+          label: t.label,
+          low,
+          high,
+          cheapest_departure: cheapestDep,
+          cheapest_return: cheapestRet
+        };
+      }
+    }
+
     const validMonths = months.filter(m => m.low !== null);
 
-    // Calculate suggested target (25th percentile of monthly lows)
     let suggestedTarget = null;
     if (validMonths.length > 0) {
       const lows = validMonths.map(m => m.low).sort((a, b) => a - b);
@@ -85,14 +104,28 @@ module.exports = async (req, res) => {
     const overallLow = validMonths.length ? Math.min(...validMonths.map(m => m.low)) : null;
     const overallHigh = validMonths.length ? Math.max(...validMonths.map(m => m.high)) : null;
 
-    res.json({
+    const payload = {
       months,
       overall_low: overallLow,
       overall_high: overallHigh,
       suggested_target: suggestedTarget,
       origin,
       destination
-    });
+    };
+
+    // Write to cache
+    try {
+      await db.query(
+        `INSERT INTO preview_cache (cache_key, data, created_at)
+         VALUES ($1, $2, NOW())
+         ON CONFLICT (cache_key) DO UPDATE SET data = $2, created_at = NOW()`,
+        [cacheKey, JSON.stringify(payload)]
+      );
+    } catch (err) {
+      console.error('Cache write error:', err.message);
+    }
+
+    res.json(payload);
   } catch (err) {
     console.error('Preview error:', err.message);
     res.status(500).json({ error: 'Failed to fetch prices' });

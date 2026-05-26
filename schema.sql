@@ -41,3 +41,13 @@ CREATE INDEX IF NOT EXISTS idx_alerts_active
 CREATE INDEX IF NOT EXISTS idx_alerts_route
   ON alerts (origin, destination)
   WHERE expires_at > NOW();
+
+-- Cache for price preview chart data (per route + trip length combo)
+CREATE TABLE IF NOT EXISTS preview_cache (
+  cache_key         TEXT PRIMARY KEY,       -- e.g. "SFO|CDG,ORY|5|7"
+  data              JSONB NOT NULL,
+  created_at        TIMESTAMP DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_preview_cache_created
+  ON preview_cache (created_at);

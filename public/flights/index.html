@@ -504,7 +504,14 @@ function renderAreaChart(data) {
   // Line
   svg += `<path d="${linePath}" fill="none" stroke="#1a73e8" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
 
-  // Data points
+  // Tooltip group (hidden by default)
+  svg += `<g id="chartTooltip" opacity="0">`;
+  svg += `<rect id="ttBg" rx="4" ry="4" fill="#202124" opacity="0.9"/>`;
+  svg += `<text id="ttText" fill="#fff" font-size="11" font-weight="500" font-family="sans-serif" text-anchor="middle"/>`;
+  svg += `<line id="ttLine" stroke="#202124" stroke-width="1" stroke-dasharray="3,2" opacity="0.3"/>`;
+  svg += `</g>`;
+
+  // Data points (visible dots)
   for (const p of lowPoints) {
     svg += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3" fill="#1a73e8"/>`;
   }
@@ -512,6 +519,12 @@ function renderAreaChart(data) {
   // Low marker
   svg += `<circle cx="${x(lowIdx).toFixed(1)}" cy="${y(lowMonth.low).toFixed(1)}" r="5" fill="#188038"/>`;
   svg += `<text x="${x(lowIdx).toFixed(1)}" y="${y(lowMonth.low) + 18}" text-anchor="middle" fill="#188038" font-size="11" font-weight="600" font-family="sans-serif">$${lowMonth.low}</text>`;
+
+  // Hit areas for hover/tap (invisible, wider targets)
+  for (let i = 0; i < lowPoints.length; i++) {
+    const p = lowPoints[i];
+    svg += `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="16" fill="transparent" data-tip="${p.month.label}: $${p.month.low}" data-tx="${p.x.toFixed(1)}" data-ty="${p.y.toFixed(1)}" class="chart-hit"/>`;
+  }
 
   // X-axis labels
   for (let i = 0; i < months.length; i++) {
@@ -521,6 +534,54 @@ function renderAreaChart(data) {
 
   svg += '</svg>';
   document.getElementById('chartSvg').innerHTML = svg;
+
+  // Tooltip event listeners
+  const svgEl = document.getElementById('chartSvg').querySelector('svg');
+  const tooltip = svgEl.querySelector('#chartTooltip');
+  const ttBg = svgEl.querySelector('#ttBg');
+  const ttText = svgEl.querySelector('#ttText');
+  const ttLine = svgEl.querySelector('#ttLine');
+
+  function showTip(el) {
+    const text = el.getAttribute('data-tip');
+    const tx = parseFloat(el.getAttribute('data-tx'));
+    const ty = parseFloat(el.getAttribute('data-ty'));
+
+    ttText.textContent = text;
+    ttText.setAttribute('x', tx);
+    ttText.setAttribute('y', ty - 20);
+
+    const bbox = ttText.getBBox();
+    const px = 8, py = 4;
+    ttBg.setAttribute('x', bbox.x - px);
+    ttBg.setAttribute('y', bbox.y - py);
+    ttBg.setAttribute('width', bbox.width + px * 2);
+    ttBg.setAttribute('height', bbox.height + py * 2);
+
+    ttLine.setAttribute('x1', tx);
+    ttLine.setAttribute('x2', tx);
+    ttLine.setAttribute('y1', ty);
+    ttLine.setAttribute('y2', ${pad.top + ch});
+
+    tooltip.setAttribute('opacity', '1');
+  }
+
+  function hideTip() {
+    tooltip.setAttribute('opacity', '0');
+  }
+
+  svgEl.querySelectorAll('.chart-hit').forEach(el => {
+    el.addEventListener('mouseenter', () => showTip(el));
+    el.addEventListener('mouseleave', hideTip);
+    el.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      showTip(el);
+    });
+  });
+
+  svgEl.addEventListener('touchstart', (e) => {
+    if (!e.target.classList.contains('chart-hit')) hideTip();
+  });
 }
 
 // ─── BACK BUTTON ────────────────────────────────────────────────

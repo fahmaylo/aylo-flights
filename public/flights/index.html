@@ -383,12 +383,19 @@ function onStep2Change() {
   const price = parseInt(targetPrice);
   const warning = document.getElementById('priceWarning');
 
-  // Check if target is unrealistically low
+  // Check if target is within a realistic range
   const lowestFound = state.previewData && state.previewData.overall_low;
   let priceOk = true;
-  if (price && lowestFound && price < lowestFound * 0.5) {
-    warning.textContent = `The lowest nonstop price we found is $${lowestFound}. A target of $${price} is unlikely to be reached.`;
-    priceOk = false;
+  if (price && lowestFound) {
+    if (price < lowestFound * 0.7) {
+      warning.textContent = `The lowest nonstop price we found is $${lowestFound}. A target of $${price} is unlikely to be reached.`;
+      priceOk = false;
+    } else if (price > lowestFound * 1.2) {
+      warning.textContent = `The lowest price is already $${lowestFound}. You'll likely be notified right away at $${price}.`;
+      priceOk = false;
+    } else {
+      warning.textContent = '';
+    }
   } else {
     warning.textContent = '';
   }

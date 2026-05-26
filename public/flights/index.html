@@ -431,12 +431,14 @@ async function findAlertPrice() {
   document.getElementById('step2Route').textContent = `${originCity} \u2192 ${destCity}`;
   document.getElementById('step2Meta').textContent = `Nonstop \u00b7 ${state.minNights}\u2013${state.maxNights} nights \u00b7 ${fmtWindow(state.travelWindow)}`;
 
-  // Reset chart and price input
+  // Reset chart, price input, and preview data
+  state.previewData = null;
   document.getElementById('chartLoading').style.display = 'block';
   document.getElementById('chartError').style.display = 'none';
   document.getElementById('chartSvg').style.display = 'none';
   document.getElementById('targetPrice').value = '';
   document.getElementById('targetPrice').placeholder = '';
+  document.getElementById('priceWarning').textContent = '';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
   // Fetch data

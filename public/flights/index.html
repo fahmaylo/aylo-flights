@@ -397,12 +397,12 @@ function onStep2Change() {
       priceOk = false;
       priceWarningTimer = setTimeout(() => {
         warning.textContent = `Please choose a higher price, given the lowest price is currently $${lowestFound.toLocaleString()}.`;
-      }, 600);
+      }, 1000);
     } else if (price > lowestFound * 1.2) {
       priceOk = false;
       priceWarningTimer = setTimeout(() => {
         warning.textContent = `Please choose a lower price, given the lowest price is currently $${lowestFound.toLocaleString()}.`;
-      }, 600);
+      }, 1000);
     }
   }
 

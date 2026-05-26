@@ -1,5 +1,8 @@
 {
   "cleanUrls": true,
+  "redirects": [
+    { "source": "/", "destination": "/flights", "permanent": false }
+  ],
   "rewrites": [
     { "source": "/flights/alert/:id", "destination": "/flights/alert.html" },
     { "source": "/flights/manage/:id", "destination": "/flights/manage.html" }

@@ -463,12 +463,12 @@ function renderAreaChart(data) {
   const cw = W - pad.left - pad.right;
   const ch = H - pad.top - pad.bottom;
 
-  const allPrices = valid.flatMap(m => [m.low, m.high]);
-  const minP = Math.min(...allPrices);
-  const maxP = Math.max(...allPrices);
+  const lows = valid.map(m => m.low);
+  const minP = Math.min(...lows);
+  const maxP = Math.max(...lows);
   const range = maxP - minP || 100;
-  const yMin = Math.floor((minP - range * 0.1) / 50) * 50;
-  const yMax = Math.ceil((maxP + range * 0.1) / 50) * 50;
+  const yMin = Math.floor((minP - range * 0.15) / 50) * 50;
+  const yMax = Math.ceil((maxP + range * 0.15) / 50) * 50;
 
   const x = (i) => pad.left + (i / (months.length - 1)) * cw;
   const y = (p) => pad.top + (1 - (p - yMin) / (yMax - yMin)) * ch;
@@ -485,11 +485,9 @@ function renderAreaChart(data) {
   const linePath = lowPoints.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
   const areaPath = linePath + ` L${lowPoints[lowPoints.length-1].x.toFixed(1)},${(pad.top + ch).toFixed(1)} L${lowPoints[0].x.toFixed(1)},${(pad.top + ch).toFixed(1)} Z`;
 
-  // Find high and low months
+  // Find low month
   const lowMonth = valid.reduce((a, b) => a.low < b.low ? a : b);
-  const highMonth = valid.reduce((a, b) => a.high > b.high ? a : b);
   const lowIdx = months.indexOf(lowMonth);
-  const highIdx = months.indexOf(highMonth);
 
   // Y-axis ticks
   const yTicks = [];
@@ -519,11 +517,7 @@ function renderAreaChart(data) {
 
   // Low marker
   svg += `<circle cx="${x(lowIdx).toFixed(1)}" cy="${y(lowMonth.low).toFixed(1)}" r="5" fill="#188038"/>`;
-  svg += `<text x="${x(lowIdx).toFixed(1)}" y="${y(lowMonth.low) + 18}" text-anchor="middle" fill="#188038" font-size="11" font-weight="600" font-family="sans-serif">Low $${lowMonth.low}</text>`;
-
-  // High marker
-  svg += `<circle cx="${x(highIdx).toFixed(1)}" cy="${y(highMonth.high).toFixed(1)}" r="5" fill="#d93025"/>`;
-  svg += `<text x="${x(highIdx).toFixed(1)}" y="${y(highMonth.high) - 10}" text-anchor="middle" fill="#d93025" font-size="11" font-weight="600" font-family="sans-serif">High $${highMonth.high}</text>`;
+  svg += `<text x="${x(lowIdx).toFixed(1)}" y="${y(lowMonth.low) + 18}" text-anchor="middle" fill="#188038" font-size="11" font-weight="600" font-family="sans-serif">$${lowMonth.low}</text>`;
 
   // X-axis labels
   for (let i = 0; i < months.length; i++) {

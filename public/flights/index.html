@@ -226,6 +226,7 @@ header { margin-bottom: 24px; padding: 0 4px; }
         <div class="price-sym">$</div>
         <input class="price-in" id="targetPrice" type="number" placeholder="" min="1" oninput="onStep2Change()" />
       </div>
+      <div class="field-error" id="priceWarning"></div>
       <div class="divider"></div>
 
       <div class="field-lbl">Your email</div>
@@ -379,7 +380,20 @@ function onStep1Change() {
 function onStep2Change() {
   const targetPrice = document.getElementById('targetPrice').value;
   const email = document.getElementById('email').value.trim();
-  const ready = targetPrice && parseInt(targetPrice) > 0 && isValidEmail(email);
+  const price = parseInt(targetPrice);
+  const warning = document.getElementById('priceWarning');
+
+  // Check if target is unrealistically low
+  const lowestFound = state.previewData && state.previewData.overall_low;
+  let priceOk = true;
+  if (price && lowestFound && price < lowestFound * 0.5) {
+    warning.textContent = `The lowest nonstop price we found is $${lowestFound}. A target of $${price} is unlikely to be reached.`;
+    priceOk = false;
+  } else {
+    warning.textContent = '';
+  }
+
+  const ready = price > 0 && isValidEmail(email) && priceOk;
   document.getElementById('submitBtn').disabled = !ready;
 }
 

@@ -543,6 +543,7 @@ function renderAreaChart(data) {
   const ttBg = svgEl.querySelector('#ttBg');
   const ttText = svgEl.querySelector('#ttText');
   const ttLine = svgEl.querySelector('#ttLine');
+  const chartBottom = pad.top + ch;
 
   function showTip(el) {
     const text = el.getAttribute('data-tip');
@@ -563,7 +564,7 @@ function renderAreaChart(data) {
     ttLine.setAttribute('x1', tx);
     ttLine.setAttribute('x2', tx);
     ttLine.setAttribute('y1', ty);
-    ttLine.setAttribute('y2', ${pad.top + ch});
+    ttLine.setAttribute('y2', chartBottom);
 
     tooltip.setAttribute('opacity', '1');
   }

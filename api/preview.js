@@ -42,7 +42,10 @@ module.exports = async (req, res) => {
       const monthStart = new Date(now.getFullYear(), now.getMonth() + m, 1);
       let outboundStart;
       if (m === 0) {
-        outboundStart = addDays(now, 1);
+        // Start at least 14 days out, but stay in the current month
+        const twoWeeks = addDays(now, 14);
+        const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        outboundStart = twoWeeks <= endOfMonth ? twoWeeks : addDays(endOfMonth, -6);
       } else {
         outboundStart = new Date(monthStart.getFullYear(), monthStart.getMonth(), 11);
       }

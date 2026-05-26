@@ -38,7 +38,7 @@ module.exports = async (req, res) => {
 
     // Build all 13 month tasks
     const tasks = [];
-    for (let m = 0; m < 13; m++) {
+    for (let m = 0; m < 12; m++) {
       const monthStart = new Date(now.getFullYear(), now.getMonth() + m, 1);
       let outboundStart;
       if (m === 0) {
@@ -56,7 +56,7 @@ module.exports = async (req, res) => {
     }
 
     // Run in parallel batches
-    const months = new Array(13);
+    const months = new Array(12);
     for (let i = 0; i < tasks.length; i += CONCURRENCY) {
       const batch = tasks.slice(i, i + CONCURRENCY);
       const results = await Promise.all(
@@ -116,8 +116,8 @@ module.exports = async (req, res) => {
       destination
     };
 
-    // Write to cache
-    try {
+    // Write to cache — only if we got actual data
+    if (validMonths.length > 0) try {
       await db.query(
         `INSERT INTO preview_cache (cache_key, data, created_at)
          VALUES ($1, $2, NOW())

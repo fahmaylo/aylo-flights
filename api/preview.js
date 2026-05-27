@@ -3,7 +3,7 @@ const db = require('../lib/db');
 const { fetchCalendarWindow, addDays, nightsBetween, fmt } = require('../lib/search');
 
 const CACHE_TTL_HOURS = 12;
-const CONCURRENCY = 12;
+const CONCURRENCY = 6;
 
 module.exports = async (req, res) => {
   if (cors(req, res)) return;
